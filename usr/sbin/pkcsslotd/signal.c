@@ -330,6 +330,7 @@ void slotdGenericSignalHandler( int Signal ) {
 
   int procindex;
   BOOL OkToExit = TRUE;
+  BOOL test_proc_use;
 
   /********************************************************
    *    DbgLog calls (possibly) printf, syslog_r, etc.
@@ -357,11 +358,11 @@ void slotdGenericSignalHandler( int Signal ) {
      if ( shmp == NULL ) {
        break;
      }
-     if ( ( pProc->inuse ) 
+     test_proc_use = pProc->inuse;      
 #if !(NOGARBAGE)
-	   && ( IsValidProcessEntry( pProc->proc_id, pProc->reg_time))
+     test_proc_use = test_proc_use && ( IsValidProcessEntry( pProc->proc_id, pProc->reg_time));
 #endif
-	  ) {
+     if ( test_proc_use ) {
        /* Someone's still using us...  Log it */
        OkToExit = FALSE;
        #ifdef DEV
